@@ -19,7 +19,11 @@ const userRegisterValidator=()=>{
         .notEmpty()
         .withMessage("password is required")
         .isLength({min:8})
-        .withMessage("password should be atleast 8 characters long")
+        .withMessage("password should be atleast 8 characters long"),
+        body("fullname")
+        .trim()
+        .notEmpty()
+        .withMessage("fullname is required")
     ]
 }
 
