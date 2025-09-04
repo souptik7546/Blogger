@@ -79,10 +79,6 @@ const registerUser = asyncHandler(async (req, res) => {
     );
   }
 
-  const { accessToken, refreshToken } =await generateRefreshAndAccessToken(
-    user?._id
-  );
-
   const { unHashedToken, hashedToken, tokenExpiry } =
     user.generateTemporaryToken();
 
@@ -113,5 +109,46 @@ const registerUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, "user regestered successfully", createdUser));
 });
 
+const loginUser= asyncHandler(async (req,res)=>{
+  //get the email/ username and password 
+  //validate
+  //check for existing user
+  //check for password
+  //make refresh and accesstoken
+  //set cookie and send response
 
-export {registerUser}
+  const {username, password, email} = req.body
+
+  const user=await User.findOne({
+    $or:[{email},{username}]
+  })
+
+  if(!user){
+    throw new ApiError(400,"user does not exist with this email or username you have entered")
+  }
+
+  const isPasswordValid=await user.isPasswordCorrect(password)
+
+  if(!isPasswordValid){
+    throw new ApiError(404,"Enetred wrong password. Try again!")
+  }
+
+  const {accessToken,refreshToken}=await generateRefreshAndAccessToken(user._id)
+
+  const updatedUser= User.findById(user._id)
+
+  const options= {
+    httpOnly:true,
+    secure:true
+  }
+
+
+  return res
+  .status(200)
+  .cookie("accessToken",accessToken,options)
+  .cookie("refreshToken",refreshToken,options)
+  .json(new ApiResponse(200,"user login successfull",{user:updatedUser, accessToken,refreshToken}))
+})
+
+
+export {registerUser, loginUser }

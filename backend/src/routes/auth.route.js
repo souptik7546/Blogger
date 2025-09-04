@@ -1,8 +1,11 @@
 import { Router } from "express";
 import { upload } from "../middleware/multer.middleware.js";
-import { userRegisterValidator } from "../validators/index.js";
+import {
+  userRegisterValidator,
+  userLoginValidator,
+} from "../validators/index.js";
 import { validate } from "../middleware/validator.middleware.js";
-import { registerUser } from "../controllers/auth.controller.js";
+import { loginUser, registerUser } from "../controllers/auth.controller.js";
 
 const router = Router();
 
@@ -14,5 +17,7 @@ router
     validate,
     registerUser,
   );
+
+router.route("/login").post(userLoginValidator(), validate, loginUser);
 
 export default router;
