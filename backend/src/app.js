@@ -18,6 +18,11 @@ app.use(cors({
 app.use(cookieParser())
 
 
+//import of routers
+import userRouter from "./routes/auth.route.js"
+
+app.use("/api/v1/users",userRouter)
+
 
 
 export default app

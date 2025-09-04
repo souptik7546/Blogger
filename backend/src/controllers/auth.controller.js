@@ -6,9 +6,17 @@ import uploadOnCloudinary from "../utils/cloudinary.js";
 import { sendEmail, emailVerificationMailgenContent } from "../utils/mail.js";
 
 const generateRefreshAndAccessToken = async (userId) => {
+    console.log(userId);
+    
   const user = await User.findById(userId);
-  const refreshToken = user.generateRefreshToken();
-  const accessToken = user.generateAccessToken();
+  if(!user){
+    throw new ApiError(404,"user with this id does not exist")
+  }
+  const refreshToken =await user.generateRefreshToken();
+  const accessToken =await user.generateAccessToken();
+
+  console.log(refreshToken,accessToken);
+  
 
   user.refreshToken = refreshToken;
 
@@ -20,10 +28,15 @@ const generateRefreshAndAccessToken = async (userId) => {
 const registerUser = asyncHandler(async (req, res) => {
   const { username, fullname, password, email } = req.body;
 
+
+  
+
   const existingUser = await User.findOne({
     $or: [{ email }, { username }],
   });
 
+  
+  
   if (existingUser) {
     throw new ApiError(
       404,
@@ -32,6 +45,8 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   const avatarLocalPath = req.file?.path;
+
+  console.log(avatarLocalPath)
 
   if (!avatarLocalPath) {
     throw new ApiError(
@@ -46,7 +61,7 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "error while uploading the file on cloudinary");
   }
 
-  const user = User.create({
+  const user =await User.create({
     username,
     email,
     fullname,
@@ -54,6 +69,8 @@ const registerUser = asyncHandler(async (req, res) => {
     avatar: avatar?.url,
     isEmailVerified: false,
   });
+  console.log(user);
+  
 
   if (!user) {
     throw new ApiError(
@@ -62,8 +79,8 @@ const registerUser = asyncHandler(async (req, res) => {
     );
   }
 
-  const { accessToken, refreshToken } = await generateRefreshAndAccessToken(
-    user._id,
+  const { accessToken, refreshToken } =await generateRefreshAndAccessToken(
+    user?._id
   );
 
   const { unHashedToken, hashedToken, tokenExpiry } =
@@ -79,9 +96,7 @@ const registerUser = asyncHandler(async (req, res) => {
     subject: "please verify your email",
     mailgenContent: emailVerificationMailgenContent(
       user?.username,
-      `${req.protocol}://${req.get(
-        "host",
-      )}/api/v1/users/verify-email/${unHashedToken}`,
+      `${req.protocol}://${req.get("host")}/api/v1/users/verify-email/${unHashedToken}`,
     ),
   });
 
@@ -97,3 +112,6 @@ const registerUser = asyncHandler(async (req, res) => {
     .status(201)
     .json(new ApiResponse(201, "user regestered successfully", createdUser));
 });
+
+
+export {registerUser}

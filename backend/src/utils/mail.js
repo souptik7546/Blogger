@@ -1,6 +1,9 @@
 import mailgen from "mailgen";
 import nodemailer from "nodemailer";
-import ApiError from "../utils/apiError";
+import ApiError from "../utils/apiError.js";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const sendEmail = async (options) => {
   const mailGenerator = new mailgen({
@@ -18,7 +21,7 @@ const sendEmail = async (options) => {
     host: process.env.MAILTRAP_SMTP_HOST,
     port: process.env.MAILTRAP_SMTP_PORT,
     auth: {
-      host: process.env.MAILTRAP_SMTP_USER,
+      user: process.env.MAILTRAP_SMTP_USER,
       pass: process.env.MAILTRAP_SMTP_PASS,
     },
   });
@@ -46,7 +49,7 @@ const emailVerificationMailgenContent = (username, verificationUrl) => {
     body: {
       name: username,
       intro: "welcome to Blogger,we are very excited to have you on board",
-      actions: {
+      action: {
         instructions: "To get verified at Blogger click here",
         button: {
           color: "#22BC66",
