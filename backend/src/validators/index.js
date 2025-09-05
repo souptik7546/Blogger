@@ -36,6 +36,8 @@ const userLoginValidator = () => {
     .trim()
     .notEmpty()
     .withMessage("passowrd is required")
+    .isLength({min:8})
+    .withMessage("password must be atleast 8 characters long")
 ];
 };
 

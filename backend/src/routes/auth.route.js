@@ -5,7 +5,8 @@ import {
   userLoginValidator,
 } from "../validators/index.js";
 import { validate } from "../middleware/validator.middleware.js";
-import { loginUser, registerUser } from "../controllers/auth.controller.js";
+import { loginUser, logoutUser, registerUser } from "../controllers/auth.controller.js";
+import { verifyJWT } from "../middleware/auth.middleware.js";
 
 const router = Router();
 
@@ -19,5 +20,7 @@ router
   );
 
 router.route("/login").post(userLoginValidator(), validate, loginUser);
+
+router.route("/logout").post(verifyJWT,logoutUser)
 
 export default router;

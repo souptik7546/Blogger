@@ -6,7 +6,7 @@ import uploadOnCloudinary from "../utils/cloudinary.js";
 import { sendEmail, emailVerificationMailgenContent } from "../utils/mail.js";
 
 const generateRefreshAndAccessToken = async (userId) => {
-    console.log(userId);
+  
     
   const user = await User.findById(userId);
   if(!user){
@@ -15,7 +15,7 @@ const generateRefreshAndAccessToken = async (userId) => {
   const refreshToken =await user.generateRefreshToken();
   const accessToken =await user.generateAccessToken();
 
-  console.log(refreshToken,accessToken);
+  
   
 
   user.refreshToken = refreshToken;
@@ -46,7 +46,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
   const avatarLocalPath = req.file?.path;
 
-  console.log(avatarLocalPath)
+  
 
   if (!avatarLocalPath) {
     throw new ApiError(
@@ -69,7 +69,7 @@ const registerUser = asyncHandler(async (req, res) => {
     avatar: avatar?.url,
     isEmailVerified: false,
   });
-  console.log(user);
+ 
   
 
   if (!user) {
@@ -135,7 +135,7 @@ const loginUser= asyncHandler(async (req,res)=>{
 
   const {accessToken,refreshToken}=await generateRefreshAndAccessToken(user._id)
 
-  const updatedUser= User.findById(user._id)
+  const updatedUser=await User.findById(user._id).select("-password")
 
   const options= {
     httpOnly:true,
@@ -147,8 +147,27 @@ const loginUser= asyncHandler(async (req,res)=>{
   .status(200)
   .cookie("accessToken",accessToken,options)
   .cookie("refreshToken",refreshToken,options)
-  .json(new ApiResponse(200,"user login successfull",{user:updatedUser, accessToken,refreshToken}))
+  .json(new ApiResponse(200,"user login successfull",{user : updatedUser, accessToken,refreshToken}))
+})
+
+const logoutUser= asyncHandler(async (req,res)=>{
+  await User.findByIdAndUpdate(req.user?._id,{
+    $unset:{ refreshToken:1}
+  })
+
+  const options= {
+    httpOnly:true,
+    secure:true
+  }
+
+  res
+  .status(200)
+  .clearCookie("accessToken",options)
+  .clearCookie("refreshToken",options)
+  .json(new ApiResponse(200,"user logged out successfully",{}))
 })
 
 
-export {registerUser, loginUser }
+
+
+export {registerUser, loginUser ,logoutUser}
