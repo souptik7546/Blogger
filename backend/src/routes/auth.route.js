@@ -10,6 +10,7 @@ import {
   logoutUser,
   refreshAccessToken,
   registerUser,
+  resendEmailVerification,
   verifyEmail,
 } from "../controllers/auth.controller.js";
 import { verifyJWT } from "../middleware/auth.middleware.js";
@@ -29,7 +30,8 @@ router.route("/login").post(userLoginValidator(), validate, loginUser);
 
 router.route("/logout").post(verifyJWT, logoutUser);
 
-router.route("/refresh-accesstoken").post(refreshAccessToken)
-router.route("/verify-email/:verificationCode").get(verifyJWT,verifyEmail)
+router.route("/refresh-accesstoken").post(refreshAccessToken);
+router.route("/verify-email/:verificationCode").get(verifyJWT, verifyEmail);
+router.route("/resend-email").post(verifyJWT, resendEmailVerification);
 
 export default router;
