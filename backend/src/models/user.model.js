@@ -45,8 +45,8 @@ const userSchema = new mongoose.Schema(
     },
     forgotPasswordToken: {
       type: String,
-    },
-    forgotPasswordExpiry: {
+    },forgotPasswordExpiry
+    : {
       type: Date,
     },
     isEmailVerified: {

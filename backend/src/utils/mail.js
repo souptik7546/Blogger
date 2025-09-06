@@ -68,7 +68,7 @@ const forgotPasswordMailgenContent = (username, passwordResetUrl) => {
     body: {
       name: username,
       intro: "We have received a forgot password request for your account",
-      actions: {
+      action: {
         instructions: "To reset your password click on the following button",
         button: {
           color: "#ae1515ff",

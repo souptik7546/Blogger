@@ -6,11 +6,14 @@ import {
 } from "../validators/index.js";
 import { validate } from "../middleware/validator.middleware.js";
 import {
+  changePassword,
+  forgotPsswordRequest,
   loginUser,
   logoutUser,
   refreshAccessToken,
   registerUser,
   resendEmailVerification,
+  resetPassword,
   verifyEmail,
 } from "../controllers/auth.controller.js";
 import { verifyJWT } from "../middleware/auth.middleware.js";
@@ -33,5 +36,7 @@ router.route("/logout").post(verifyJWT, logoutUser);
 router.route("/refresh-accesstoken").post(refreshAccessToken);
 router.route("/verify-email/:verificationCode").get(verifyJWT, verifyEmail);
 router.route("/resend-email").post(verifyJWT, resendEmailVerification);
-
+router.route("/change-password").post(verifyJWT,changePassword)
+router.route("/forgot-password").post(forgotPsswordRequest)
+router.route("/reset-password/:forgotPasswordToken").post(resetPassword)
 export default router;
