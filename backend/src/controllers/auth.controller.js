@@ -5,6 +5,8 @@ import { User } from "../models/user.model.js";
 import uploadOnCloudinary from "../utils/cloudinary.js";
 import { sendEmail, emailVerificationMailgenContent } from "../utils/mail.js";
 import jwt from "jsonwebtoken";
+import crypto from "crypto"
+import APiError from "../utils/apiError.js";
 
 const generateRefreshAndAccessToken = async (userId) => {
   const user = await User.findById(userId);
@@ -201,4 +203,44 @@ const refreshAccessToken = asyncHandler(async (req, res, next) => {
     );
 });
 
-export { registerUser, loginUser, logoutUser, refreshAccessToken };
+const verifyEmail = asyncHandler(async (req, res) => {
+  //get the unhashed token from the params
+  //check if the email is already verified or not
+  //get the user id from req.user and validate the user
+  //verify the unhashed token with the hashed token in the db
+  //make the isEmail verified filed as true
+  //save the user and send a response
+
+  const { verificationCode } = req.params;
+
+  // const user =await User.findById(req.user?._id)
+  if(!req.user){
+    throw new ApiError(400,"the user is no logged in. Login to complete email verification")
+  }
+
+  if(req.user.isEmailVerified){
+    return res.status(200).json(new ApiResponse(200,`${req.user?.username} is already verified`,{}))
+  }
+  const hashedToken= crypto.createHash("sha256").update(verificationCode).digest("hex")
+
+  const verifiedUser= await User.findOne({
+    emailVerificationToken: hashedToken,
+    emailVerificationExpiry: {$gt: Date.now()}
+  })
+
+  if(!verifiedUser){
+    throw new APiError(402,"the email verification time has expired please generate a new session")
+  }
+
+  verifiedUser.isEmailVerified=true;
+  verifiedUser.emailVerificationToken= "",
+  verifiedUser.emailVerificationExpiry= ""
+
+  await verifiedUser.save({validateBeforeSave:false})
+
+  res
+  .status(209)
+  .json(new ApiResponse(200,"email verified successfully",{}))
+});
+
+export { registerUser, loginUser, logoutUser, refreshAccessToken ,verifyEmail};
