@@ -6,10 +6,9 @@ const postSchema= new mongoose.Schema({
         required:true,
         trim:true
     },
-    description:{
+     description:{
         type:String,
-        required:true,
-        trim:true
+        requied:true,
     },
     featuredImage:{
         type:String, //cloudinary url
