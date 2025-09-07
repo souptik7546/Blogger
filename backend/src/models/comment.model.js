@@ -7,11 +7,13 @@ const commentSchema= new mongoose.Schema({
     },
     post:{
         type:Schema.Types.ObjectId,
-        ref:"Post"
+        ref:"Post",
+        required:true
     },
     writtenBy:{
         type:Schema.Types.ObjectId,
-        ref:"User"
+        ref:"User",
+        required:true
     }
 },{timestamps:true})
 
