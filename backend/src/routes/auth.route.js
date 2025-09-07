@@ -36,7 +36,8 @@ router.route("/logout").post(verifyJWT, logoutUser);
 router.route("/refresh-accesstoken").post(refreshAccessToken);
 router.route("/verify-email/:verificationCode").get(verifyJWT, verifyEmail);
 router.route("/resend-email").post(verifyJWT, resendEmailVerification);
-router.route("/change-password").post(verifyJWT,changePassword)
-router.route("/forgot-password").post(forgotPsswordRequest)
-router.route("/reset-password/:forgotPasswordToken").post(resetPassword)
+router.route("/change-password").post(verifyJWT, changePassword);
+router.route("/forgot-password").post(forgotPsswordRequest);
+router.route("/reset-password/:forgotPasswordToken").post(resetPassword);
+
 export default router;
