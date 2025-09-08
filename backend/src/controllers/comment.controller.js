@@ -32,7 +32,7 @@ const createComment = asyncHandler(async (req, res) => {
         throw new ApiError(500,"error at backend while posting the comment")
     }
 
-    return res.status(201).json(new ApiResponse(201,"your comment was successfully posted",createComment))
+    return res.status(201).json(new ApiResponse(201,"your comment was successfully posted",createdComment))
 
 
 
@@ -66,7 +66,7 @@ const updateComment = asyncHandler(async (req, res) => {
         throw new ApiError(503,"error while updating the comment in backend")
     }
 
-    return res.status(200).json(new ApiResponse(201,"comment has been edited successfully",updateComment))
+    return res.status(200).json(new ApiResponse(201,"comment has been edited successfully",updatedComment))
 });
 
 const deleteComment = asyncHandler(async (req, res) => {
