@@ -8,6 +8,7 @@ import { validate } from "../middleware/validator.middleware.js";
 import {
   changePassword,
   forgotPsswordRequest,
+  getUserProfile,
   loginUser,
   logoutUser,
   refreshAccessToken,
@@ -39,5 +40,10 @@ router.route("/resend-email").post(verifyJWT, resendEmailVerification);
 router.route("/change-password").post(verifyJWT, changePassword);
 router.route("/forgot-password").post(forgotPsswordRequest);
 router.route("/reset-password/:forgotPasswordToken").post(resetPassword);
+
+
+//adavance aggrigation routes
+
+router.route("/getuser/:username").post(verifyJWT,getUserProfile)
 
 export default router;

@@ -340,7 +340,7 @@ const forgotPsswordRequest = asyncHandler(async (req, res) => {
 
   user.forgotPasswordToken = hashedToken;
   user.forgotPasswordExpiry = tokenExpiry;
-  
+
   await user.save({ validateBeforeSave: false });
 
   try {
@@ -358,38 +358,93 @@ const forgotPsswordRequest = asyncHandler(async (req, res) => {
     throw new ApiError(400, error.message);
   }
 
-
   return res
-  .status(200)
-  .json(new ApiResponse(200,"forgot password request sent successfully",{}))
+    .status(200)
+    .json(
+      new ApiResponse(200, "forgot password request sent successfully", {}),
+    );
 });
 
-const resetPassword= asyncHandler(async(req,res)=>{
-  const {forgotPasswordToken}=req.params
-  const {newPassword}= req.body
+const resetPassword = asyncHandler(async (req, res) => {
+  const { forgotPasswordToken } = req.params;
+  const { newPassword } = req.body;
 
-  const hashedToken= crypto.createHash("sha256").update(forgotPasswordToken).digest("hex")
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(forgotPasswordToken)
+    .digest("hex");
 
-  const user= await User.findOne({
-    forgotPasswordToken:hashedToken,
-    forgotPasswordExpiry:{$gt:Date.now()}
-  })
+  const user = await User.findOne({
+    forgotPasswordToken: hashedToken,
+    forgotPasswordExpiry: { $gt: Date.now() },
+  });
 
-  if(!user){
-    throw new ApiError(400,"reset password link has expired")
+  if (!user) {
+    throw new ApiError(400, "reset password link has expired");
   }
 
-  user.password=newPassword
+  user.password = newPassword;
 
-  user.forgotPasswordToken=""
-  user.forgotPasswordExpiry=""
+  user.forgotPasswordToken = "";
+  user.forgotPasswordExpiry = "";
 
-  await user.save({validateBeforeSave:false})
+  await user.save({ validateBeforeSave: false });
 
-  return res.status(200).json(new ApiResponse(200,"new password was saved successfully"))
-})
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "new password was saved successfully"));
+});
 
+//todo:-get user (aggrigation pipelines)
 
+const getUserProfile = asyncHandler(async (req, res) => {
+  const { username } = req.params;
+
+  if (!username) {
+    throw new ApiError(404, "there is no username in the search params");
+  }
+
+  const userProfile = await User.aggregate([
+    {
+      $match: {
+        username: username, //here we have found an user with the username we have got from params
+      },
+    },
+    {
+      $lookup: {
+        from: "posts",
+        localField: "_id",
+        foreignField: "createdBy",
+        as: "posts",
+      },
+    },
+    {
+      $addFields:{
+        postCount:{
+          $size:"$posts"
+        }
+      }
+    },
+    {
+      $project: {
+        username:1,
+        fullname:1,
+        email:1,
+        avatar:1,
+        posts:1,
+        postCount:1,
+        createdAt:1,
+        updatedAt:1
+      },
+    },
+  ]);
+
+  if(!userProfile){
+    throw new ApiError(500,"error while fetching the user from the database")
+  }
+
+  return res.status(200).json(new ApiResponse(200,"user fetched successfully",userProfile[0]))
+});
 
 export {
   registerUser,
@@ -400,5 +455,6 @@ export {
   resendEmailVerification,
   changePassword,
   forgotPsswordRequest,
-  resetPassword
+  resetPassword,
+  getUserProfile
 };

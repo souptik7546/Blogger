@@ -4,6 +4,8 @@ import APiError from "../utils/apiError.js";
 import { User } from "../models/user.model.js";
 import { Post } from "../models/post.model.js";
 import uploadOnCloudinary from "../utils/cloudinary.js";
+import { Like } from "../models/like.model.js";
+import mongoose from "mongoose";
 
 const createPost = asyncHandler(async (req, res) => {
   //validate the user from current session
@@ -90,17 +92,61 @@ const updatePost = asyncHandler(async (req, res) => {
 
 const getPost = asyncHandler(async (req, res) => {
   const { post } = req.params;
-  const featuredPost = await Post.findById(post);
+  
+  const searchedPost= await Post.aggregate([
+    {
+      $match:{
+        _id:new mongoose.Types.ObjectId(post)
+      }
+    },
+    {
+      $lookup:{
+        from:"likes",
+        localField:"_id",
+        foreignField:"likedTo",
+        as:"likes"
+      }
+    },
+    {
+      $lookup:{
+        from:"comments",
+        localField:"_id",
+        foreignField:"post",
+        as:"comments"
+      }
+    },
+    {
+      $addFields:{
+        likesCount:{$size:"$likes"},
+        commentCount:{$size:"$comments"}
+      }
+    },
+    {
+      $project:{
+        _id:1,
+        title:1,
+        description:1,
+        featuredImage:1,
+        createdBy:1,
+        isActive:1,
+        likesCount:1,
+        commentCount:1,
+        comments:1,
+        createdAt:1,
+        updatedAt:1
+      }
+    }
+  ])
 
-  if (!featuredPost) {
-    throw new APiError(401, "this post is not available");
+  if(searchedPost.length===0){
+    throw new APiError(404,"the post dosent exist")
   }
 
-  console.log(featuredPost);
+  
 
   return res
     .status(200)
-    .json(new ApiResponse(200, "post fetched successfully", featuredPost));
+    .json(new ApiResponse(200, "post fetched successfully", searchedPost));
 });
 
 const deletePost = asyncHandler(async (req, res) => {
@@ -109,24 +155,83 @@ const deletePost = asyncHandler(async (req, res) => {
   //search for the post and check if it was created by the same user or not
   //delete the post and send the response
 
-  const {post}=req.params
-  const featuredPost= await Post.findById(post)
+  const { post } = req.params;
+  const featuredPost = await Post.findById(post);
 
-
-  if(!featuredPost){
-    throw new APiError(400,"this post does not exists so you cant delete it")
+  if (!featuredPost) {
+    throw new APiError(400, "this post does not exists so you cant delete it");
   }
 
-
-  if(req.user?._id.toString()!==featuredPost.createdBy.toString()){
-    throw new APiError(400,"this post is not created by you so you can't delete it")
+  if (req.user?._id.toString() !== featuredPost.createdBy.toString()) {
+    throw new APiError(
+      400,
+      "this post is not created by you so you can't delete it",
+    );
   }
 
-  await Post.findByIdAndDelete(post)
+  await Post.findByIdAndDelete(post);
 
-  return res.status(209).json(new ApiResponse(209,"post deleted successfully",{}))
+  return res
+    .status(209)
+    .json(new ApiResponse(209, "post deleted successfully", {}));
+});
 
+const getAllPosts = asyncHandler(async (req, res) => {
+
+
+
+  const allPosts = await Post.aggregate([
+    {
+      $match: {
+        isActive: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "likes",
+        localField: "_id",
+        foreignField: "likedTo",
+        as: "likes",
+      },
+     
+    },
+    {
+       $lookup: {
+        from: "comments",
+        localField: "_id",
+        foreignField: "post",
+        as: "comments",
+      },
+    },
+    {
+      $addFields: {
+        likesCount: { $size: "$likes" },
+        commentCount: { $size: "$comments" },
+      },
+    },
+    {
+      $project: {
+        title: 1,
+        description: 1,
+        featuredImage: 1,
+        createdBy: 1,
+        likesCount: 1,
+        commentCount: 1,
+        createdAt: 1,
+        updatedAt: 1,
+      },
+    },
+  ]);
+
+
+if(!allPosts){
+  throw new APiError(500,"error while fetching all posts")
+}
+
+return res.status(200).json(new ApiResponse(200,"fetched all posts",allPosts))
 
 });
 
-export { createPost, updatePost, getPost, deletePost };
+
+
+export { createPost, updatePost, getPost, deletePost ,getAllPosts };
