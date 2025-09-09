@@ -90,65 +90,6 @@ const updatePost = asyncHandler(async (req, res) => {
     );
 });
 
-const getPost = asyncHandler(async (req, res) => {
-  const { post } = req.params;
-  
-  const searchedPost= await Post.aggregate([
-    {
-      $match:{
-        _id:new mongoose.Types.ObjectId(post)
-      }
-    },
-    {
-      $lookup:{
-        from:"likes",
-        localField:"_id",
-        foreignField:"likedTo",
-        as:"likes"
-      }
-    },
-    {
-      $lookup:{
-        from:"comments",
-        localField:"_id",
-        foreignField:"post",
-        as:"comments"
-      }
-    },
-    {
-      $addFields:{
-        likesCount:{$size:"$likes"},
-        commentCount:{$size:"$comments"}
-      }
-    },
-    {
-      $project:{
-        _id:1,
-        title:1,
-        description:1,
-        featuredImage:1,
-        createdBy:1,
-        isActive:1,
-        likesCount:1,
-        commentCount:1,
-        comments:1,
-        createdAt:1,
-        updatedAt:1
-      }
-    }
-  ])
-
-  if(searchedPost.length===0){
-    throw new APiError(404,"the post dosent exist")
-  }
-
-  
-
-  return res
-    .status(200)
-    .json(new ApiResponse(200, "post fetched successfully", searchedPost));
-});
-
 const deletePost = asyncHandler(async (req, res) => {
   //secured route
   //get the post id out of params
@@ -176,8 +117,83 @@ const deletePost = asyncHandler(async (req, res) => {
     .json(new ApiResponse(209, "post deleted successfully", {}));
 });
 
-const getAllPosts = asyncHandler(async (req, res) => {
+const getPost = asyncHandler(async (req, res) => {
+  const { post } = req.params;
 
+  const searchedPost = await Post.aggregate([
+    {
+      $match: {
+        _id: new mongoose.Types.ObjectId(post),
+      },
+    },
+    {
+      $lookup: {
+        from: "likes",
+        localField: "_id",
+        foreignField: "likedTo",
+        as: "likes",
+      },
+    },
+    {
+      $lookup: {
+        from: "comments",
+        localField: "_id",
+        foreignField: "post",
+        as: "comments",
+      },
+    },
+    {
+      $lookup:{
+        from:"users",
+        localField:"createdBy",
+        foreignField:"_id",
+        as:"createdBy",
+        pipeline:[
+          {
+            $project:{
+              username:1,
+              _id:1,
+              fullname:1,
+              email:1,
+              avatar:1
+            }
+          }
+        ]
+      }
+    },
+    {
+      $addFields: {
+        likesCount: { $size: "$likes" },
+        commentCount: { $size: "$comments" },
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        title: 1,
+        description: 1,
+        featuredImage: 1,
+        createdBy: 1,
+        isActive: 1,
+        likesCount: 1,
+        commentCount: 1,
+        comments: 1,
+        createdAt: 1,
+        updatedAt: 1,
+      },
+    },
+  ]);
+
+  if (searchedPost.length === 0) {
+    throw new APiError(404, "the post dosent exist");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "post fetched successfully", searchedPost));
+});
+
+const getAllPosts = asyncHandler(async (req, res) => {
 
 
   const allPosts = await Post.aggregate([
@@ -193,10 +209,9 @@ const getAllPosts = asyncHandler(async (req, res) => {
         foreignField: "likedTo",
         as: "likes",
       },
-     
     },
     {
-       $lookup: {
+      $lookup: {
         from: "comments",
         localField: "_id",
         foreignField: "post",
@@ -223,15 +238,12 @@ const getAllPosts = asyncHandler(async (req, res) => {
     },
   ]);
 
+  if (!allPosts) {
+    throw new APiError(500, "error while fetching all posts");
+  }
 
-if(!allPosts){
-  throw new APiError(500,"error while fetching all posts")
-}
-
-return res.status(200).json(new ApiResponse(200,"fetched all posts",allPosts))
-
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "fetched all posts", allPosts));
 });
-
-
-
-export { createPost, updatePost, getPost, deletePost ,getAllPosts };
+export { createPost, updatePost, getPost, deletePost, getAllPosts };
