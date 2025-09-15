@@ -135,7 +135,7 @@ const loginUser = asyncHandler(async (req, res) => {
     user._id,
   );
 
-  const updatedUser = await User.findById(user._id).select("-password");
+  const updatedUser = await User.findById(user._id).select("-password -emailVerificationExpiry -emailVerificationToken -forgotPasswordExpiry -forgotPasswordToken");
 
   const options = {
     httpOnly: true,
@@ -395,6 +395,16 @@ const resetPassword = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, "new password was saved successfully"));
 });
 
+const getCurrentUser= asyncHandler(async(req,res)=>{
+  const user= await User.findById(req.user?._id).select("-password -refreshToken -emailVerificationToken -emailVerificationExpiry -forgotPasswordToken -forgotPasswordExpiry")
+
+  if(!user){
+    throw new ApiError(400,"no user is logged in currently or maybe there is a problem while fetching the user")
+  }
+
+  return res.status(200).json(new ApiResponse(200,"current login user fetched Successfully",user))
+
+})
 //todo:-get user (aggrigation pipelines)
 
 const getUserProfile = asyncHandler(async (req, res) => {
@@ -456,5 +466,6 @@ export {
   changePassword,
   forgotPsswordRequest,
   resetPassword,
-  getUserProfile
+  getUserProfile,
+  getCurrentUser
 };

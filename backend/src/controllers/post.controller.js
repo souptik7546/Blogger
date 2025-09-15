@@ -165,6 +165,13 @@ const getPost = asyncHandler(async (req, res) => {
       $addFields: {
         likesCount: { $size: "$likes" },
         commentCount: { $size: "$comments" },
+        canUpdate: {
+          $cond :{
+            if:{$in : [req.user?.email , "$createdBy.email"]},
+            then: true,
+            else:false
+          }
+        }
       },
     },
     {
@@ -180,6 +187,7 @@ const getPost = asyncHandler(async (req, res) => {
         comments: 1,
         createdAt: 1,
         updatedAt: 1,
+        canUpdate:1
       },
     },
   ]);
@@ -190,7 +198,7 @@ const getPost = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, "post fetched successfully", searchedPost));
+    .json(new ApiResponse(200, "post fetched successfully", searchedPost[0]));
 });
 
 const getAllPosts = asyncHandler(async (req, res) => {

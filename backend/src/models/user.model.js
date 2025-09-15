@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import crypto from "crypto"
+import crypto from "crypto";
 import { type } from "os";
 
 const userSchema = new mongoose.Schema(
@@ -45,20 +45,20 @@ const userSchema = new mongoose.Schema(
     },
     forgotPasswordToken: {
       type: String,
-    },forgotPasswordExpiry
-    : {
+    },
+    forgotPasswordExpiry: {
       type: Date,
     },
     isEmailVerified: {
       type: Boolean,
       default: false,
     },
-    posts:[
-        {
-            type:Schema.Types.ObjectId,
-            ref:"Post"
-        }
-    ]
+    posts: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Post",
+      },
+    ],
   },
   { timestamps: true },
 );
@@ -101,21 +101,18 @@ userSchema.methods.generateRefreshToken = function () {
   );
 };
 
-
 //todo decode this
-userSchema.methods.generateTemporaryToken= function(){
-    const unHashedToken= crypto.randomBytes(20).toString("hex")
+userSchema.methods.generateTemporaryToken = function () {
+  const unHashedToken = crypto.randomBytes(20).toString("hex");
 
-    const hashedToken= crypto
+  const hashedToken = crypto
     .createHash("sha256")
     .update(unHashedToken)
-    .digest("hex")
+    .digest("hex");
 
-    const tokenExpiry= Date.now()+ (20*60*1000)
+  const tokenExpiry = Date.now() + 20 * 60 * 1000;
 
-    return {unHashedToken,hashedToken,tokenExpiry}
-}
-
+  return { unHashedToken, hashedToken, tokenExpiry };
+};
 
 export const User = mongoose.model("User", userSchema);
-

@@ -7,7 +7,7 @@ const router= Router()
 
 router.route("/create").post(verifyJWT,upload.single("featuredImage"),createPost)
 router.route("/update/:post").post(verifyJWT,upload.single("featuredImage"),updatePost)
-router.route("/getpost/:post").get(getPost)
+router.route("/getpost/:post").get(verifyJWT,getPost)
 router.route("/delete/:post").post(verifyJWT,deletePost)
 
 
