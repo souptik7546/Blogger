@@ -48,7 +48,7 @@ function Footer() {
 
       {/* Bottom */}
       <div className="border-t border-gray-300 dark:border-gray-700 mt-6 py-4 text-center text-sm text-gray-600 dark:text-gray-400">
-        © {new Date().getFullYear()} MyApp. All rights reserved.
+        © {new Date().getFullYear()} Blogger. A blog app by Souptik.
       </div>
     </footer>
   )

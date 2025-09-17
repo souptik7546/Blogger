@@ -1,26 +1,28 @@
-import React, { useContext } from "react";
 import { LogoutBtn, Logo, Container } from "../index.js";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+
 import { useNavigate } from "react-router-dom";
 import { Sun, Moon } from "lucide-react";
-import { ThemeContext } from "../../contexts/theme.js";
+import useTheme from "../../contexts/theme.js";
+import { useSelector } from "react-redux";
 
 function Header() {
-  // console.log(state.auth);
-  // const authStatus = useSelector((state) => state.auth.status);
-  const authStatus = true;
+  
+  const authStatus = useSelector((state) => state.status);
+  // const authStatus = false;
+  // console.log(authStatus);
+  
 
   const navigate = useNavigate();
 
   const navItems = [
     {
-      name: "home",
+      name: "Home",
       slug: "/",
       active: "true",
     },
     {
-      name: "login",
+      name: "Login",
       slug: "/login",
       active: !authStatus,
     },
@@ -30,7 +32,7 @@ function Header() {
       active: !authStatus,
     },
     {
-      name: "AllPosts",
+      name: "All-Posts",
       slug: "/all-posts",
       active: authStatus,
     },
@@ -41,7 +43,7 @@ function Header() {
     },
   ];
 
-  const { themeMode, setlightTheme, setdarkTheme } = useContext(ThemeContext);
+  const { themeMode, setlightTheme, setdarkTheme } = useTheme();
 
   const onThemeChange = (e) => {
     const darkModeStatus = e.currentTarget.checked;
@@ -50,18 +52,18 @@ function Header() {
     } else {
       setlightTheme(); // unchecked → enable light mode
     }
-    console.log(themeMode);
+    
   };
 
   return (
     <Container>
-      <nav className="bg-gray-100 dark:bg-gray-900 shadow-md w-full rounded-lg">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+      <nav className="bg-gray-100 dark:bg-gray-900 shadow-md w-full rounded-b-lg">
+        <div className=" mx-auto px-6 py-4 flex justify-between items-center">
           {/* Brand / Logo */}
-          <h1 className="text-xl font-bold text-gray-800 dark:text-white">
-            MyApp
-          </h1>
-          <ul className="flex ml-auto items-center gap-4">
+          <Link to={"/"} className="text-xl font-bold text-gray-800 dark:text-white">
+            Blogger
+          </Link>
+          <ul className="flex ml-auto items-center gap-6">
             {navItems.map((item) =>
               item.active ? (
                 <li key={item.name}>
