@@ -143,35 +143,35 @@ const getPost = asyncHandler(async (req, res) => {
       },
     },
     {
-      $lookup:{
-        from:"users",
-        localField:"createdBy",
-        foreignField:"_id",
-        as:"createdBy",
-        pipeline:[
+      $lookup: {
+        from: "users",
+        localField: "createdBy",
+        foreignField: "_id",
+        as: "createdBy",
+        pipeline: [
           {
-            $project:{
-              username:1,
-              _id:1,
-              fullname:1,
-              email:1,
-              avatar:1
-            }
-          }
-        ]
-      }
+            $project: {
+              username: 1,
+              _id: 1,
+              fullname: 1,
+              email: 1,
+              avatar: 1,
+            },
+          },
+        ],
+      },
     },
     {
       $addFields: {
         likesCount: { $size: "$likes" },
         commentCount: { $size: "$comments" },
         canUpdate: {
-          $cond :{
-            if:{$in : [req.user?.email , "$createdBy.email"]},
+          $cond: {
+            if: { $in: [req.user?.email, "$createdBy.email"] },
             then: true,
-            else:false
-          }
-        }
+            else: false,
+          },
+        },
       },
     },
     {
@@ -187,7 +187,7 @@ const getPost = asyncHandler(async (req, res) => {
         comments: 1,
         createdAt: 1,
         updatedAt: 1,
-        canUpdate:1
+        canUpdate: 1,
       },
     },
   ]);
@@ -202,8 +202,6 @@ const getPost = asyncHandler(async (req, res) => {
 });
 
 const getAllPosts = asyncHandler(async (req, res) => {
-
-
   const allPosts = await Post.aggregate([
     {
       $match: {
@@ -254,4 +252,70 @@ const getAllPosts = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, "fetched all posts", allPosts));
 });
-export { createPost, updatePost, getPost, deletePost, getAllPosts };
+
+const getTopPosts = asyncHandler(async (req, res) => {
+  //make a lookups of all the posts and calculate the average likes
+  //now make another lookup to get the posts whose likes count is more than the average
+
+  const averageLikesArray = await Post.aggregate([
+    {
+      $group: {
+        _id: null,
+        averageLikes: {
+          $avg: "$likesCount",
+        },
+      },
+    },
+  ]);
+
+  const avgLikes = averageLikesArray[0].averageLikes;
+
+  const topPosts = await Post.aggregate([
+    {
+      $match: {
+        isActive: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "likes",
+        localField: "_id",
+        foreignField: "likedTo",
+        as: "likes",
+      },
+    },
+    {
+      $addFields: {
+        likesCount: {
+          $size: "$likes",
+        },
+      },
+    },
+    {
+      $match: {
+        likesCount: { $gte: avgLikes },
+      },
+    },
+    {
+      $project: {
+        title: 1,
+        description: 1,
+        featuredImage: 1,
+        createdBy: 1,
+        likesCount: 1,
+        commentCount: 1,
+        createdAt: 1,
+        updatedAt: 1,
+      },
+    },
+  ]);
+
+  if (!topPosts){
+    throw new APiError(401,"error while fetching top posts")
+  }
+
+  return res
+  .status(200)
+  .json(new ApiResponse(200,"top posts fetched successfully",topPosts))
+});
+export { createPost, updatePost, getPost, deletePost, getAllPosts ,getTopPosts};
