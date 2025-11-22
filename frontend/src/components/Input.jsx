@@ -1,7 +1,11 @@
 import React, { useId } from "react";
 
-function Input({ label, type = "text", className = "", ...props }, ref) {
+const Input = React.forwardRef(function Input(
+  { label, type = "text", className = "", ...props },
+  ref
+) {
   const id = useId();
+
   return (
     <div className="w-full">
       {label && (
@@ -9,18 +13,10 @@ function Input({ label, type = "text", className = "", ...props }, ref) {
           {label}
         </label>
       )}
-      <input
-        type={type}
-        className={`${className} w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 
-                   bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 
-                   focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                   transition-colors`}
-        ref={ref}
-        {...props}
-        id={id}
-      />
+      <input type={type} className={`${className} px-3 py-2 rounded-lg bg-white text-black outline-none focus:bg-gray-50 duration-200 border border-gray-200 w-full`} id={id} ref={ref} {...props}/>
+      
     </div>
   );
-}
+});
 
 export default Input;

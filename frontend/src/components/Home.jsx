@@ -1,9 +1,10 @@
-import React from 'react'
+
+
 
 function Home() {
   return (
-    <div className=''>Home</div>
+    <div>hello</div>
   )
 }
 
-export default Home
+export default Home;

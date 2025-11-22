@@ -1,26 +1,22 @@
 import React from "react";
+import { logout } from "../../features/auth/authSlice";
 import { useDispatch } from "react-redux";
 import authService from "../../service/auth.service";
-import { logout } from "../../app/authSlice";
 
-export const LogoutBtn = () => {
+function LogoutBtn() {
   const dispatch = useDispatch();
-  
-  
   const logoutHandler = () => {
-    authService.logout().then(() => {
-      dispatch(logout());
-    });
+    authService.logout().then(dispatch(logout()));
   };
 
-  
   return (
     <button
+      className="inline-bock px-6 py-2 duration-200 bg-red-500 hover:bg-red-700 rounded-full"
       onClick={logoutHandler}
-      className="bg-red-600 dark:bg-red-700 text-white font-medium px-6 py-2 rounded-lg shadow-md 
-                 hover:bg-red-700 dark:hover:bg-red-800 transition-colors"
     >
       Logout
     </button>
   );
-};
+}
+
+export default LogoutBtn;

@@ -1,110 +1,121 @@
-import { LogoutBtn, Logo, Container } from "../index.js";
+import { Container, Logo, LogoutBtn } from "../index.js";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-
-import { useNavigate } from "react-router-dom";
-import { Sun, Moon } from "lucide-react";
-import useTheme from "../../contexts/theme.js";
-import { useSelector } from "react-redux";
+import { Moon, Sun, ChevronDown } from "lucide-react";
+import { useSelector, useDispatch } from "react-redux";
+import { changeTheme } from "../../features/theme/themeSlice.js";
 
 function Header() {
-  
-  const authStatus = useSelector((state) => state.status);
-  // const authStatus = false;
-  // console.log(authStatus);
-  
+  const dispatch = useDispatch();
+  const darkTheme = useSelector((state) => state.theme.darkTheme);
+  const [openMenu, setOpenMenu] = useState(false);
+  const authStatus = useSelector((state) => state.auth.status);
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    const mode = darkTheme ? "dark" : "light";
 
-  const navItems = [
-    {
-      name: "Home",
-      slug: "/",
-      active: "true",
-    },
-    {
-      name: "Login",
-      slug: "/login",
-      active: !authStatus,
-    },
-    {
-      name: "Signup",
-      slug: "/signup",
-      active: !authStatus,
-    },
-    {
-      name: "All-Posts",
-      slug: "/all-posts",
-      active: authStatus,
-    },
-    {
-      name: "Add Post",
-      slug: "/add-post",
-      active: authStatus,
-    },
+    const html = document.documentElement;
+    html.classList.remove("light", "dark");
+    html.classList.add(mode);
+  }, [darkTheme]);
+
+  const navLinks = [
+    { name: "Home", path: "/", active: true },
+    { name: "All Posts", path: "/all-post", active: true },
+    { name: "Add Post", path: "/add-post", active: true },
+    { name: "Login", path: "/login", active: !authStatus },
+    { name: "Signup", path: "/signup", active: !authStatus },
   ];
-
-  const { themeMode, setlightTheme, setdarkTheme } = useTheme();
-
-  const onThemeChange = (e) => {
-    const darkModeStatus = e.currentTarget.checked;
-    if (darkModeStatus) {
-      setdarkTheme(); // checked → enable dark mode
-    } else {
-      setlightTheme(); // unchecked → enable light mode
-    }
-    
-  };
 
   return (
     <Container>
-      <nav className="bg-gray-100 dark:bg-gray-900 shadow-md w-full rounded-b-lg">
-        <div className=" mx-auto px-6 py-4 flex justify-between items-center">
-          {/* Brand / Logo */}
-          <Link to={"/"} className="text-xl font-bold text-gray-800 dark:text-white">
-            Blogger
+      <header className="w-full bg-white dark:bg-gray-900 shadow-sm dark:shadow-gray-800">
+        <div className=" mx-auto px-4 py-3 flex items-center justify-between">
+          {/* Logo */}
+          <Link
+            to="/"
+            className="text-xl font-semibold text-gray-900 dark:text-gray-100"
+          >
+            <Logo />
           </Link>
-          <ul className="flex ml-auto items-center gap-6">
-            {navItems.map((item) =>
-              item.active ? (
-                <li key={item.name}>
-                  <button
-                    onClick={() => navigate(item.slug)}
-                    className="inline-block px-6 py-2 duration-200 hover:bg-blue-400 dark:text-gray-200 rounded-full"
-                  >
-                    {item.name}
-                  </button>
-                </li>
-              ) : null
-            )}
-            {authStatus && (
-              <li>
-                <LogoutBtn />
-              </li>
-            )}
-            <li>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="sr-only peer"
-                  onChange={onThemeChange}
-                  checked={themeMode === "dark"}
-                />
 
+          {/* Navigation Links */}
+          <nav>
+            <ul className="flex items-center gap-6">
+              {navLinks.map(
+                (link) =>
+                  link.active && (
+                    <li key={link.name}>
+                      <Link
+                        to={link.path}
+                        className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition"
+                      >
+                        {link.name}
+                      </Link>
+                    </li>
+                  )
+              )}
+            </ul>
+          </nav>
+
+          <div className="flex items-center gap-5">
+            {/* Theme Toggle */}
+            <label className="flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                checked={darkTheme}
+                onChange={() => dispatch(changeTheme())}
+                className="hidden"
+              />
+              <div className="w-10 h-5 bg-gray-300 dark:bg-gray-600 rounded-full relative transition">
                 <div
-                  className="w-11 h-6 bg-gray-200 dark:bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer 
-                 peer-checked:bg-blue-600
-                  relative
-                   after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:after:translate-x-full peer-checked:after:border-white"
+                  className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white dark:bg-gray-200 shadow transform transition ${
+                    darkTheme ? "translate-x-5" : ""
+                  }`}
                 ></div>
+              </div>
+              <span className="ml-2 text-gray-700 dark:text-gray-300">
+                {darkTheme ? <Moon size={18} /> : <Sun size={18} />}
+              </span>
+            </label>
 
-                {/* Sun & Moon icons */}
-                <Sun className="absolute left-1 w-4 h-4 text-yellow-600 peer-checked:hidden" />
-                <Moon className="absolute right-1 w-4 h-4 text-gray-400 hidden peer-checked:block" />
-              </label>
-            </li>
-          </ul>
+            {/* Profile Dropdown */}
+            <div className="flex items-center gap-4">
+              {/* Profile Dropdown */}
+              <div className="relative">
+                <button
+                  onClick={() => setOpenMenu(!openMenu)}
+                  className="flex items-center gap-1"
+                >
+                  <img
+                    src="https://i.pravatar.cc/40"
+                    alt="avatar"
+                    className="w-10 h-10 rounded-full border border-gray-300 dark:border-gray-700"
+                  />
+                  <ChevronDown
+                    size={18}
+                    className="text-gray-700 dark:text-gray-300"
+                  />
+                </button>
+
+                {openMenu && (
+                  <div className="absolute right-0 mt-2 w-36 bg-white dark:bg-gray-800 shadow-md rounded-xl overflow-hidden">
+                    <Link
+                      to="/profile"
+                      className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    >
+                      Profile
+                    </Link>
+                  </div>
+                )}
+              </div>
+
+              {/* Logout Button */}
+             {authStatus && <LogoutBtn/>}
+            </div>
+          </div>
         </div>
-      </nav>
+      </header>
     </Container>
   );
 }

@@ -10,7 +10,7 @@ class auth {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/v1/users/register",
+        `${import.meta.env.VITE_BACKEND_URI}/users/register`,
         formData,{withCredentials:true}
       );
       if (response) {
@@ -24,7 +24,7 @@ class auth {
   async login(email, password) {
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/v1/users/login",
+        `${import.meta.env.VITE_BACKEND_URI}/users/login`,
         { email, password },
         { withCredentials: true }
       );
@@ -39,7 +39,7 @@ class auth {
   async getCurrentUser() {
     try {
       const response = await axios.get(
-        "http://localhost:8000/api/v1/users/currentuser",
+       `${import.meta.env.VITE_BACKEND_URI}/users/currentuser`,
         {
           withCredentials: true,
         }
@@ -53,7 +53,7 @@ class auth {
   async logout() {
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/v1/users/logout",
+        `${import.meta.env.VITE_BACKEND_URI}/users/logout`,
         {},
         { withCredentials: true }
       );
@@ -67,7 +67,7 @@ class auth {
   async refreshAccessToken() {
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/v1/users/refresh-accesstoken",
+        `${import.meta.env.VITE_BACKEND_URI}/users/refresh-accesstoken`,
         {},
         { withCredentials: true }
       );
@@ -81,7 +81,7 @@ class auth {
   async verifyEmail(verificationCode) {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/v1/users/verify-email/${verificationCode}`,
+        `${import.meta.env.VITE_BACKEND_URI}/users/verify-email/${verificationCode}`,
         { withCredentials: true }
       );
 
@@ -94,7 +94,7 @@ class auth {
   async resendVerificationEmail(){
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/v1/users/resend-email",
+        `${import.meta.env.VITE_BACKEND_URI}/users/resend-email`,
         {},
         { withCredentials: true }
       );
@@ -108,7 +108,7 @@ class auth {
   async changePassword(oldPassword, newPassword){
      try {
       const response = await axios.post(
-        "http://localhost:8000/api/v1/users/change-password",
+        `${import.meta.env.VITE_BACKEND_URI}/users/change-password`,
         {oldPassword, newPassword},
         { withCredentials: true }
       );
@@ -123,7 +123,7 @@ class auth {
     
       try {
       const response = await axios.post(
-        "http://localhost:8000/api/v1/users/forgot-password",
+        `${import.meta.env.VITE_BACKEND_URI}/users/forgot-password`,
         {email},
         { withCredentials: true }
       );
@@ -138,7 +138,7 @@ class auth {
     
      try {
       const response = await axios.post(
-        `http://localhost:8000/api/v1/users/reset-password/${forgotPasswordToken}`,
+        `${import.meta.env.VITE_BACKEND_URI}/users/reset-password/${forgotPasswordToken}`,
         {newPassword},
         { withCredentials: true }
       );
@@ -152,7 +152,7 @@ class auth {
   async getUserProfile(username){
      try {
       const response = await axios.post(
-        `http://localhost:8000/api/v1/users/getuser/${username}`,
+        `${import.meta.env.VITE_BACKEND_URI}/users/getuser/${username}`,
         {},
         { withCredentials: true }
       );

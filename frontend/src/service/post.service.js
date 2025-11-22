@@ -1,5 +1,4 @@
 import axios from "axios";
-//    http://localhost:8000/api/v1/post
 class post {
   async createPost(title, description, isActive, featuredImage = "") {
     const formData = new FormData();
@@ -13,7 +12,7 @@ class post {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/v1/post/create",
+        `${import.meta.env.VITE_BACKEND_URI}/post/create`,
         formData,
         { withCredentials: true }
       );
@@ -37,7 +36,7 @@ class post {
 
     try {
       const response = await axios.post(
-        `http://localhost:8000/api/v1/post/update/${post}`,
+        `${import.meta.env.VITE_BACKEND_URI}/post/update/${post}`,
         formData,
         { withCredentials: true }
       );
@@ -52,7 +51,7 @@ class post {
   async deletePost(post) {
     try {
       const response = await axios.post(
-        `http://localhost:8000/api/v1/post/delete/${post}`,
+        `${import.meta.env.VITE_BACKEND_URI}/post/delete/${post}`,
         {},
         { withCredentials: true }
       );
@@ -67,7 +66,7 @@ class post {
   async getPost(post) {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/v1/post/getpost/${post}`,
+        `${import.meta.env.VITE_BACKEND_URI}/post/getpost/${post}`,
         { withCredentials: true }
       );
 
@@ -81,17 +80,17 @@ class post {
   async getAllPost() {
     try {
       const response = await axios.post(
-        `http://localhost:8000/api/v1/post//allposts`,
+        `${import.meta.env.VITE_BACKEND_URI}/post/allposts`,
         {},
         { withCredentials: true }
       );
 
       console.log(response);
-      return response.body;
+      return response;
     } catch (error) {
       throw error;
     }
   }
 }
 
-export default post;
+export default new post;
