@@ -1,29 +1,113 @@
-import React,{useCallback} from 'react'
-import { useForm } from 'react-hook-form'
-import {Button,RTE,Input,Select} from "../index"
-import postService from "../../service/post.service"
-import { useNavigate } from 'react-router-dom'
-import { useSelector } from 'react-redux'
-
+import React, { useCallback } from "react";
+import { useForm } from "react-hook-form";
+import { Button, RTE, Input, Select } from "../index";
+import postService from "../../service/post.service";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function PostForm(post) {
-    const {register,handleSubmit,watch,setValue,control,getValues}=useForm({
-        defaultValues:{
-            title:post?.title || '',
-            description: post?.description || '',
-            status:post?.status || true,
-            featuredImage: post?.featuredImage || ''
-        }
-    })
-    const navigate=useNavigate()
-    const submit= (data)=>{
-        if(post){
-            
-        }
+  const { register, handleSubmit, watch, setValue, control, getValues } =
+    useForm({
+      defaultValues: {
+        title: post?.title || "",
+        description: post?.description || "",
+        status: post?.status || true,
+        featuredImage: post?.featuredImage || "",
+      },
+    });
+  const navigate = useNavigate();
+  const userData = useSelector((state) => state.auth.userData);
+  const submit = (data) => {
+    //check if post id is given in the function arguments and if it is given then update the fields by the fields which are changed
+    //if post is not given then create a new post
+    //check how to handle the file i.e the coverImage while sending the data via react hook form as when we get the value via register we get the whole array of the image file but we only need the [0]th property
+
+    if(data.isActive=== "active"){
+      data.isActive=true;
+    }else{
+      data.isActive=false;
     }
+
+
+    if (post) {
+      if (post?._id) {
+        postService
+          .updatePost({
+            ...data,
+            post: post._id,
+            fraturedImage: data.featuredImage[0],
+          })
+          .then
+          //navigate to the updated post using the post id
+          ()
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    }
+
+    if (!post) {
+      postService
+        .createPost({ ...data, featuredImage: featuredImage[0] })
+        .then
+        //again write the logic to navigate it to the edited post after the edit is comitted
+        ()
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
   return (
-    <div>PostForm</div>
-  )
+    <form onSubmit={handleSubmit(submit)} className="flex flex-wrap">
+      <div className="w-2/3 px-2">
+        <Input
+          label="Title :"
+          placeholder="Title"
+          className="mb-4"
+          {...register("title", { required: true })}
+        />
+        
+        <RTE
+          label="Content :"
+          name="description"
+          control={control}
+          defaultValue={getValues("description")}
+        />
+      </div>
+      <div className="w-1/3 px-2">
+        <Input
+          label="Featured Image :"
+          type="file"
+          className="mb-4"
+          accept="image/png, image/jpg, image/jpeg, image/gif"
+          {...register("featuredImage", { required: !post })}
+        />
+        //implement this feature i.e if the post was present before which happens in case of update just show the preview to the user
+        {/* {post && (
+          <div className="w-full mb-4">
+            <img
+              src={appwriteService.getFilePreview(post.featuredImage)}
+              alt={post.title}
+              className="rounded-lg"
+            />
+          </div>
+        )} */}
+        <Select
+          options={["active", "inactive"]}
+          label="Status"
+          className="mb-4"
+          {...register("isActive", { required: true })}
+        />
+        <Button
+          type="submit"
+          bgColor={post ? "bg-green-500" : undefined}
+          className="w-full"
+        >
+          {post ? "Update" : "Submit"}
+        </Button>
+      </div>
+    </form>
+  );
 }
 
-export default PostForm
+export default PostForm;
