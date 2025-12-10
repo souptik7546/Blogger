@@ -22,12 +22,11 @@ function PostForm(post) {
     //if post is not given then create a new post
     //check how to handle the file i.e the coverImage while sending the data via react hook form as when we get the value via register we get the whole array of the image file but we only need the [0]th property
 
-    if(data.isActive=== "active"){
-      data.isActive=true;
-    }else{
-      data.isActive=false;
+    if (data.isActive === "active") {
+      data.isActive = true;
+    } else {
+      data.isActive = false;
     }
-
 
     if (post) {
       if (post?._id) {
@@ -66,7 +65,7 @@ function PostForm(post) {
           className="mb-4"
           {...register("title", { required: true })}
         />
-        
+
         <RTE
           label="Content :"
           name="description"
@@ -82,16 +81,15 @@ function PostForm(post) {
           accept="image/png, image/jpg, image/jpeg, image/gif"
           {...register("featuredImage", { required: !post })}
         />
-        //implement this feature i.e if the post was present before which happens in case of update just show the preview to the user
-        {/* {post && (
+        {post && (
           <div className="w-full mb-4">
             <img
-              src={appwriteService.getFilePreview(post.featuredImage)}
+              src={post.featuredImage}
               alt={post.title}
               className="rounded-lg"
             />
           </div>
-        )} */}
+        )}
         <Select
           options={["active", "inactive"]}
           label="Status"
