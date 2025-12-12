@@ -14,6 +14,8 @@ function Login() {
 
   const handleLogin = (data) => {
     setError("");
+    console.log(data);
+    
     authService
       .login(data)
       .then((userData) => {

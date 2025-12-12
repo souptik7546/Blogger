@@ -8,8 +8,6 @@ function Home() {
     postService
       .getAllPost()
       .then((posts) => {
-        console.log("1111111111",posts);
-        
         if (posts) {
           setPosts(posts.data.data);
         }

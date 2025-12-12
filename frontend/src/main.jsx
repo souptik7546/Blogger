@@ -37,7 +37,7 @@ const router = createBrowserRouter(
         </Protected>
       }
       />
-      <Route path="all-post" element={<AllPost/>}/>
+      <Route path="/all-post" element={<AllPost/>}/>
       <Route path='/add-post' element={
         <Protected authentication>
           <AddPost/>

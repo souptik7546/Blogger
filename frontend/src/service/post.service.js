@@ -84,8 +84,6 @@ class post {
         {},
         { withCredentials: true }
       );
-
-      console.log(response);
       return response;
     } catch (error) {
       throw error;

@@ -11,7 +11,7 @@ function AllPost() {
         postService.getAllPost()
         .then(
             (data)=>{
-                dispatch(getAllPosts({posts:data}))
+                dispatch(getAllPosts({posts:data.data.data}))
             }
         )
         .catch((error)=>{
@@ -25,7 +25,7 @@ function AllPost() {
         <Container>
             <div className="flex flex-wrap">
                 {
-                posts.map((post)=>(
+                posts.posts?.map((post)=>(
                     <div key={post._id} className='p-2 w-1/4 '>
                         <PostCard {...post}/>
                     </div>

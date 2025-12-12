@@ -9,6 +9,8 @@ class auth {
     formData.append("avatar", avatar);
 
     try {
+      console.log(formData);
+      
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URI}/users/register`,
         formData,{withCredentials:true}
@@ -21,8 +23,11 @@ class auth {
     }
   }
 
-  async login(email, password) {
+  async login(data) {
+    const {email, password}=data
     try {
+      console.log("11111111",{ email, password });
+      
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URI}/users/login`,
         { email, password },
