@@ -12,4 +12,5 @@ import Login from "./Login.jsx"
 import PostForm from "./post-form/PostForm.jsx"
 import PostCard from "./PostCard.jsx"
 import Protected from "./AuthLayout.jsx"
-export { Header, Footer, Container, Logo, LogoutBtn, Button, Input,RTE ,Select,Signup,Login,PostForm,PostCard,Protected};
+import Profile from "./Profile.jsx";
+export { Header, Footer, Container, Logo, LogoutBtn, Button, Input,RTE ,Select,Signup,Login,PostForm,PostCard,Protected,Profile};

@@ -1,6 +1,6 @@
 import { Container, Logo, LogoutBtn } from "../index.js";
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Moon, Sun, ChevronDown } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import { changeTheme } from "../../features/theme/themeSlice.js";
@@ -10,7 +10,9 @@ function Header() {
   const darkTheme = useSelector((state) => state.theme.darkTheme);
   const [openMenu, setOpenMenu] = useState(false);
   const authStatus = useSelector((state) => state.auth.status);
-
+  const userImage= useSelector((state)=> state.auth.userData?.avatar)
+  const navigate= useNavigate()
+  
   useEffect(() => {
     const mode = darkTheme ? "dark" : "light";
 
@@ -22,7 +24,7 @@ function Header() {
   const navLinks = [
     { name: "Home", path: "/", active: true },
     { name: "All Posts", path: "/all-post", active: true },
-    { name: "Add Post", path: "/add-post", active: true },
+    { name: "Add Post", path: "/add-post", active: authStatus },
     { name: "Login", path: "/login", active: !authStatus },
     { name: "Signup", path: "/signup", active: !authStatus },
   ];
@@ -82,36 +84,20 @@ function Header() {
             {/* Profile Dropdown */}
             <div className="flex items-center gap-4">
               {/* Profile Dropdown */}
-              <div className="relative">
-                <button
-                  onClick={() => setOpenMenu(!openMenu)}
-                  className="flex items-center gap-1"
-                >
+              {authStatus && (
+                <button onClick={()=>{
+                  navigate("/profile")
+                }}>
                   <img
-                    src="https://i.pravatar.cc/40"
-                    alt="avatar"
-                    className="w-10 h-10 rounded-full border border-gray-300 dark:border-gray-700"
-                  />
-                  <ChevronDown
-                    size={18}
-                    className="text-gray-700 dark:text-gray-300"
+                    src={userImage}
+                    alt="Profile"
+                    className="w-10 h-10 rounded-full object-cover border-2 border-gray-300 dark:border-gray-500"
                   />
                 </button>
-
-                {openMenu && (
-                  <div className="absolute right-0 mt-2 w-36 bg-white dark:bg-gray-800 shadow-md rounded-xl overflow-hidden">
-                    <Link
-                      to="/profile"
-                      className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                    >
-                      Profile
-                    </Link>
-                  </div>
-                )}
-              </div>
+              )}
 
               {/* Logout Button */}
-             {authStatus && <LogoutBtn/>}
+              {authStatus && <LogoutBtn />}
             </div>
           </div>
         </div>

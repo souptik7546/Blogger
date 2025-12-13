@@ -1,13 +1,16 @@
 import axios from "axios";
 class post {
-  async createPost(title, description, isActive, featuredImage = "") {
+  async createPost(data) {
+    const {title, description, isActive, featuredImage} =data
+    console.log({title, description, isActive, featuredImage});
+    
     const formData = new FormData();
 
     formData.append("title", title);
     formData.append("description", description);
     formData.append("isActive", isActive);
     if (featuredImage) {
-      formData.append("featuredImage", featuredImage);
+      formData.append("featuredImage", featuredImage[0]);
     }
 
     try {
@@ -18,20 +21,21 @@ class post {
       );
 
       console.log(response);
-      return response.body;
+      return response.data;
     } catch (error) {
       throw error;
     }
   }
 
-  async updatePost(title, description, isActive, post, featuredImage = "") {
+  async updatePost(data,post) {
+    const {title, description, isActive, featuredImage}= data
     const formData = new FormData();
 
     formData.append("title", title);
     formData.append("description", description);
     formData.append("isActive", isActive);
     if (featuredImage) {
-      formData.append("featuredImage", featuredImage);
+      formData.append("featuredImage", featuredImage[0]);
     }
 
     try {
@@ -41,8 +45,8 @@ class post {
         { withCredentials: true }
       );
 
-      console.log(response);
-      return response.body;
+      console.log(response.data);
+      return response.data;
     } catch (error) {
       throw error;
     }
@@ -69,9 +73,7 @@ class post {
         `${import.meta.env.VITE_BACKEND_URI}/post/getpost/${post}`,
         { withCredentials: true }
       );
-
-      console.log(response);
-      return response.body;
+      return response.data.data;
     } catch (error) {
       throw error;
     }

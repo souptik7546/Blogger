@@ -1,40 +1,45 @@
 import axios from "axios";
 class auth {
-  async createAccount(email, password, username, fullname, avatar) {
+  async createAccount(data) {
+    const { email, password, username, fullname, avatar } = data;
+    console.log("111111111111", {
+      email,
+      password,
+      username,
+      fullname,
+      avatar,
+    });
     const formData = new FormData();
 
     formData.append("fullname", fullname);
-    formData.append("email", email), formData.append("username", username);
+    formData.append("email", email);
+    formData.append("username", username);
     formData.append("password", password);
-    formData.append("avatar", avatar);
+    formData.append("avatar", avatar[0]);
 
     try {
-      console.log(formData);
-      
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URI}/users/register`,
-        formData,{withCredentials:true}
+        formData,
+        { withCredentials: true }
       );
       if (response) {
         return response;
       }
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
   async login(data) {
-    const {email, password}=data
+    const { email, password } = data;
     try {
-      console.log("11111111",{ email, password });
-      
+
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URI}/users/login`,
         { email, password },
         { withCredentials: true }
       );
-
-      console.log(response);
       return response;
     } catch (error) {
       throw error;
@@ -44,7 +49,7 @@ class auth {
   async getCurrentUser() {
     try {
       const response = await axios.get(
-       `${import.meta.env.VITE_BACKEND_URI}/users/currentuser`,
+        `${import.meta.env.VITE_BACKEND_URI}/users/currentuser`,
         {
           withCredentials: true,
         }
@@ -86,7 +91,9 @@ class auth {
   async verifyEmail(verificationCode) {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URI}/users/verify-email/${verificationCode}`,
+        `${
+          import.meta.env.VITE_BACKEND_URI
+        }/users/verify-email/${verificationCode}`,
         { withCredentials: true }
       );
 
@@ -96,7 +103,7 @@ class auth {
     }
   }
 
-  async resendVerificationEmail(){
+  async resendVerificationEmail() {
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URI}/users/resend-email`,
@@ -110,11 +117,11 @@ class auth {
     }
   }
 
-  async changePassword(oldPassword, newPassword){
-     try {
+  async changePassword(oldPassword, newPassword) {
+    try {
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URI}/users/change-password`,
-        {oldPassword, newPassword},
+        { oldPassword, newPassword },
         { withCredentials: true }
       );
 
@@ -124,12 +131,11 @@ class auth {
     }
   }
 
-  async forgotPassword(email){
-    
-      try {
+  async forgotPassword(email) {
+    try {
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URI}/users/forgot-password`,
-        {email},
+        { email },
         { withCredentials: true }
       );
 
@@ -139,12 +145,13 @@ class auth {
     }
   }
 
-  async resetPassword(forgotPasswordToken,newPassword){
-    
-     try {
+  async resetPassword(forgotPasswordToken, newPassword) {
+    try {
       const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URI}/users/reset-password/${forgotPasswordToken}`,
-        {newPassword},
+        `${
+          import.meta.env.VITE_BACKEND_URI
+        }/users/reset-password/${forgotPasswordToken}`,
+        { newPassword },
         { withCredentials: true }
       );
 
@@ -154,8 +161,8 @@ class auth {
     }
   }
 
-  async getUserProfile(username){
-     try {
+  async getUserProfile(username) {
+    try {
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URI}/users/getuser/${username}`,
         {},

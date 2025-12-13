@@ -14,12 +14,10 @@ function Login() {
 
   const handleLogin = (data) => {
     setError("");
-    console.log(data);
-    
     authService
       .login(data)
-      .then((userData) => {
-        dispatch(login(userData));
+      .then((userData) => {        
+        dispatch(login(userData.data.data.user));
         navigate("/");
       })
       .catch((error) => {

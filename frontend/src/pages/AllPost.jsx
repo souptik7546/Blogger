@@ -19,6 +19,8 @@ function AllPost() {
         })
      }
     }, [])
+    console.log(posts.posts);
+    
     
   return (
     <div className='w-full py-8'>

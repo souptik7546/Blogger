@@ -21,10 +21,10 @@ function EditPost() {
       }
     }, [])
     
-  return post ?(
+  return posts ?(
   <div className='py-8'>
     <Container>
-        <PostForm post={post}/>
+        <PostForm post={posts}/>
     </Container>
   </div>
    ): null

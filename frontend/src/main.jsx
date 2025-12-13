@@ -11,7 +11,7 @@ import {
 } from "react-router-dom";
 import App from "./App.jsx";
 import Home from "./pages/Home.jsx";
-import {Protected} from "./components/index";
+import {Profile, Protected} from "./components/index";
 import Login from "./pages/Login.jsx";
 import Signup from "./pages/Signup.jsx"
 import AllPost from "./pages/AllPost.jsx";
@@ -45,12 +45,17 @@ const router = createBrowserRouter(
       }
       />
       <Route path='/edit-post/:post' element={
-        <Protected authentication={false}>
+        <Protected authentication>
           <EditPost/>
         </Protected>
       }
       />
       <Route path="/post/:post" element={<Post/>}/>
+      <Route path="/profile" element={
+        <Protected authentication>
+          <Profile/>
+        </Protected>
+      }/>
     </Route>
   )
 );

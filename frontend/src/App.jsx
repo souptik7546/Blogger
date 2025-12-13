@@ -40,12 +40,12 @@ function App() {
 
 
   return !loading ? (
-      <div className="min-h-screen flex flex-wrap content-between bg-white dark:bg-gray-700">
+      <div className="min-h-screen flex flex-col bg-white dark:bg-gray-700">
         <div className="w-full block">
           <header className="fixed top-0 left-0 w-full z-50">
             <Header />
           </header>
-          <main className="pt-18 w-full h-screen">
+          <main className="flex-grow pt-24 pb-24 w-full ">
             <Outlet/>
           </main>
           <Footer />

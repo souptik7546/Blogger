@@ -6,13 +6,14 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 function PostForm(post) {
+  
   const { register, handleSubmit, watch, setValue, control, getValues } =
     useForm({
       defaultValues: {
-        title: post?.title || "",
-        description: post?.description || "",
-        status: post?.status || true,
-        featuredImage: post?.featuredImage || "",
+        title: post?.post?.title || "",
+        description: post?.post?.description || "",
+        status: post?.post?.status || true,
+        featuredImage: post?.post?.featuredImage || "",
       },
     });
   const navigate = useNavigate();
@@ -21,41 +22,41 @@ function PostForm(post) {
     //check if post id is given in the function arguments and if it is given then update the fields by the fields which are changed
     //if post is not given then create a new post
     //check how to handle the file i.e the coverImage while sending the data via react hook form as when we get the value via register we get the whole array of the image file but we only need the [0]th property
-
+    
     if (data.isActive === "active") {
       data.isActive = true;
     } else {
       data.isActive = false;
     }
 
-    if (post) {
-      if (post?._id) {
+    if (post.post) {
+      if (post.post?._id) {
         postService
-          .updatePost({
-            ...data,
-            post: post._id,
-            fraturedImage: data.featuredImage[0],
-          })
+          .updatePost(data,post.post?._id)
           .then
           //navigate to the updated post using the post id
-          ()
+          (()=>{
+            navigate(`/post/${post.post?._id}`)
+          })
           .catch((error) => {
             console.log(error);
           });
       }
     }
 
-    if (!post) {
+    if (!post?.post?._id) {
       postService
-        .createPost({ ...data, featuredImage: featuredImage[0] })
-        .then
-        //again write the logic to navigate it to the edited post after the edit is comitted
-        ()
+        .createPost(data)
+        .then((data)=>{
+          // console.log(data.data._id); 
+          navigate(`/post/${data?.data?._id}`)
+        })
         .catch((error) => {
           console.log(error);
         });
     }
   };
+  
   return (
     <form onSubmit={handleSubmit(submit)} className="flex flex-wrap">
       <div className="w-2/3 px-2">
@@ -84,7 +85,7 @@ function PostForm(post) {
         {post && (
           <div className="w-full mb-4">
             <img
-              src={post.featuredImage}
+              src={post.post?.featuredImage}
               alt={post.title}
               className="rounded-lg"
             />
@@ -101,7 +102,7 @@ function PostForm(post) {
           bgColor={post ? "bg-green-500" : undefined}
           className="w-full"
         >
-          {post ? "Update" : "Submit"}
+          {post.post?._id ? "Update" : "Submit"}
         </Button>
       </div>
     </form>

@@ -14,15 +14,14 @@ function Signup() {
   const signup = (data) => {
     console.log(data);
     authService
-      .createAccount({...data,avatar:data.avatar[0]})
+      .createAccount(data)
       .then((userData) => {
         //note:- need to write the atomatic login logig in this after the signup and update that in the Store for now we made console.log of the user data
         console.log(userData);
       })
       .catch((error) => {
         console.log(error);
-        
-        setError(error);
+        setError(error.response.data.message);
       });
   };
   return (
