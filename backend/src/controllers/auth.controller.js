@@ -456,6 +456,48 @@ const getUserProfile = asyncHandler(async (req, res) => {
   return res.status(200).json(new ApiResponse(200,"user fetched successfully",userProfile[0]))
 });
 
+const userProfileUpdate= asyncHandler(async(req,res)=>{
+  //accept all the fields which user want to update
+  //get the user
+  //validate the password
+  //update the fields except the password 
+  //return response with the new updated user
+  const {newfullname,newusername,password}= req.body;
+  const user= await User.findById(req.user._id)
+
+  if(!user){
+    throw new ApiError(401,"user session has expired please login again to continue")
+  }
+
+  const validatedPassword= await user.isPasswordCorrect(password)
+  if(!validatedPassword){
+    throw new ApiError(403,"you have entered wrong password, enter correct password and try again")
+  }
+
+  if(newfullname){
+    user.fullname= newfullname
+  }
+  if(newusername){
+    user.username=newusername
+  }
+  const avatarLocalPath = req.file?.path;
+  if(avatarLocalPath){
+    const newavatar=await uploadOnCloudinary(avatarLocalPath)
+    if(!newavatar){
+      throw new ApiError(500,"error while uploading file on cloudinary")
+    }
+    user.avatar=newavatar?.url
+  }
+
+  await user.save()
+
+  const updatedUser=await User.findById(user?._id).select("-password -refreshToken -emailVerificationToken -emailVerificationExpiry")
+
+  return res
+  .status(200)
+  .json(new ApiResponse(200,"user details updated successfully",updatedUser))
+})
+
 export {
   registerUser,
   loginUser,
@@ -467,5 +509,6 @@ export {
   forgotPsswordRequest,
   resetPassword,
   getUserProfile,
-  getCurrentUser
+  getCurrentUser,
+  userProfileUpdate
 };

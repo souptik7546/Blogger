@@ -17,6 +17,7 @@ import {
   resendEmailVerification,
   resetPassword,
   verifyEmail,
+  userProfileUpdate
 } from "../controllers/auth.controller.js";
 import { verifyJWT } from "../middleware/auth.middleware.js";
 
@@ -33,6 +34,7 @@ router.route("/forgot-password").post(forgotPsswordRequest);
 router.route("/reset-password/:forgotPasswordToken").post(resetPassword);
 
 router.route("/currentuser").get(verifyJWT,getCurrentUser)
+router.route("/updateuser").post(verifyJWT,upload.single("avatar"),userProfileUpdate)
 
 
 //adavance aggrigation routes
