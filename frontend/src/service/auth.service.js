@@ -2,13 +2,6 @@ import axios from "axios";
 class auth {
   async createAccount(data) {
     const { email, password, username, fullname, avatar } = data;
-    console.log("111111111111", {
-      email,
-      password,
-      username,
-      fullname,
-      avatar,
-    });
     const formData = new FormData();
 
     formData.append("fullname", fullname);
@@ -172,6 +165,34 @@ class auth {
       return response.data;
     } catch (error) {
       throw error;
+    }
+  }
+
+  async updateUserProfile(data){
+    const {newfullname,newusername,avatar,password}=data
+    const formData = new FormData();
+    if(newfullname){
+      formData.append("newfullname",newfullname)
+    }
+    if(newusername){
+      formData.append("newusername",newusername)
+    }
+    if(avatar){
+      formData.append("avatar",avatar[0])
+    }
+    formData.append("password",password)
+
+    try {
+      const response= await axios.post(
+        `${import.meta.env.VITE_BACKEND_URI}/users/updateuser`,
+        formData,
+        {withCredentials:true}
+      )
+      if(response){
+        return response
+      }
+    } catch (error) {
+      throw error
     }
   }
 }

@@ -18,6 +18,8 @@ import AllPost from "./pages/AllPost.jsx";
 import AddPost from "./pages/AddPost.jsx"
 import EditPost from "./pages/EditPost.jsx";
 import Post from "./pages/Post.jsx";
+import EditProfile from "./pages/EditProfile.jsx";
+import ChangePassword from "./pages/ChangePassword.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -54,6 +56,16 @@ const router = createBrowserRouter(
       <Route path="/profile" element={
         <Protected authentication>
           <Profile/>
+        </Protected>
+      }/>
+      <Route path="/update-profile" element={
+        <Protected authentication>
+          <EditProfile/>
+        </Protected>
+      }/>
+      <Route path="/change-password" element={
+        <Protected authentication>
+          <ChangePassword/>
         </Protected>
       }/>
     </Route>
