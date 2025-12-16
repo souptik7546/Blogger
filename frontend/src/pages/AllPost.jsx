@@ -19,7 +19,6 @@ function AllPost() {
         })
      }
     }, [])
-    console.log(posts.posts);
     
     
   return (

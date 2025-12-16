@@ -7,9 +7,9 @@ function Footer() {
         
         {/* Logo / Brand */}
         <div>
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white">MyApp</h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white">BLOGGER</h2>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-            Making life easier, one line of code at a time.
+            Making life easier, get all the latest updates here.
           </p>
         </div>
 

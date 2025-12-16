@@ -15,4 +15,5 @@ import Protected from "./AuthLayout.jsx"
 import Profile from "./Profile.jsx";
 import EditProfile from "./EditProfile.jsx";
 import PasswordForm from "./PasswordForm.jsx";
-export { Header, Footer, Container, Logo, LogoutBtn, Button, Input,RTE ,Select,Signup,Login,PostForm,PostCard,Protected,Profile,EditProfile,PasswordForm};
+import LikePostBtn from "./LikePostBtn.jsx";
+export { Header, Footer, Container, Logo, LogoutBtn, Button, Input,RTE ,Select,Signup,Login,PostForm,PostCard,Protected,Profile,EditProfile,PasswordForm,LikePostBtn};

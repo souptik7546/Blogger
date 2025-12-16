@@ -89,7 +89,6 @@ class auth {
         }/users/verify-email/${verificationCode}`,
         { withCredentials: true }
       );
-
       return response.data;
     } catch (error) {
       throw error;

@@ -20,6 +20,7 @@ import EditPost from "./pages/EditPost.jsx";
 import Post from "./pages/Post.jsx";
 import EditProfile from "./pages/EditProfile.jsx";
 import ChangePassword from "./pages/ChangePassword.jsx";
+import MyPosts from "./pages/MyPosts.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -66,6 +67,11 @@ const router = createBrowserRouter(
       <Route path="/change-password" element={
         <Protected authentication>
           <ChangePassword/>
+        </Protected>
+      }/>
+      <Route path="/my-posts" element={
+        <Protected authentication>
+          <MyPosts/>
         </Protected>
       }/>
     </Route>

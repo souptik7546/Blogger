@@ -10,9 +10,9 @@ function Header() {
   const darkTheme = useSelector((state) => state.theme.darkTheme);
   const [openMenu, setOpenMenu] = useState(false);
   const authStatus = useSelector((state) => state.auth.status);
-  const userImage= useSelector((state)=> state.auth.userData?.avatar)
-  const navigate= useNavigate()
-  
+  const userImage = useSelector((state) => state.auth.userData?.avatar);
+  const navigate = useNavigate();
+
   useEffect(() => {
     const mode = darkTheme ? "dark" : "light";
 
@@ -27,6 +27,7 @@ function Header() {
     { name: "Add Post", path: "/add-post", active: authStatus },
     { name: "Login", path: "/login", active: !authStatus },
     { name: "Signup", path: "/signup", active: !authStatus },
+    { name: "My Posts", path:"/my-posts", active: authStatus },
   ];
 
   return (
@@ -85,9 +86,11 @@ function Header() {
             <div className="flex items-center gap-4">
               {/* Profile Dropdown */}
               {authStatus && (
-                <button onClick={()=>{
-                  navigate("/profile")
-                }}>
+                <button
+                  onClick={() => {
+                    navigate("/profile");
+                  }}
+                >
                   <img
                     src={userImage}
                     alt="Profile"

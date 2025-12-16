@@ -1,23 +1,27 @@
 import React, { useEffect, useState } from "react";
 import postService from "../service/post.service";
 import { Container, PostCard } from "../components/index";
+import { useSelector,useDispatch } from 'react-redux'
+import { getAllPosts } from '../features/post/postSlice'
 
 function Home() {
-  const [posts, setPosts] = useState(null);
-  useEffect(() => {
-    postService
-      .getAllPost()
-      .then((posts) => {
-        if (posts) {
-          setPosts(posts.data.data);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+   const posts= useSelector(state => state.posts)
+    const dispatch= useDispatch()
+    useEffect(() => {
+     if(!posts.status){
+        postService.getAllPost()
+        .then(
+            (data)=>{
+                dispatch(getAllPosts({posts:data.data.data}))
+            }
+        )
+        .catch((error)=>{
+            console.log(error) 
+        })
+     }
+    }, [])
 
-  if (posts?.length === 0) {
+  if (posts?.posts?.length === 0) {
     return (
       <div className="w-full py-8 mt-4 text-center">
         <Container>
@@ -36,7 +40,7 @@ function Home() {
     <div className='w-full py-8'>
         <Container>
                 <div className='flex flex-wrap'>
-                    {posts?.map((post) => (
+                    {posts?.posts?.map((post) => (
                         <div key={post._id} className='p-2 w-1/4'>
                             <PostCard {...post} />
                         </div>
