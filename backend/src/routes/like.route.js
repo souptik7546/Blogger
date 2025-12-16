@@ -1,6 +1,6 @@
 import {Router} from "express"
 import {verifyJWT} from "../middleware/auth.middleware.js"
-import { likePost, removeLike } from "../controllers/like.controller.js"
+import { isLiked, likePost, removeLike } from "../controllers/like.controller.js"
 
 const router= Router()
 
@@ -12,5 +12,6 @@ router.route("/delete/:post").post(verifyJWT,removeLike)
 /*
 post on http://localhost:5173/api/v1/like/delete/:post
 */
+router.route("/isliked/:post").post(verifyJWT,isLiked)
 
 export default router

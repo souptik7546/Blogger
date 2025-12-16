@@ -1,14 +1,17 @@
 import mongoose, { Schema } from "mongoose";
 
-const likeSchema= new mongoose.Schema({
-    likedBy:{
-        type:Schema.Types.ObjectId,
-        ref:"User"
+const likeSchema = new mongoose.Schema(
+  {
+    likedBy: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
     },
-    likedTo:{
-        type:Schema.Types.ObjectId,
-        ref:"User"
-    }
-},{timestamps:true})
+    likedTo: {
+      type: Schema.Types.ObjectId,
+      ref: "Post",
+    },
+  },
+  { timestamps: true },
+);
 
-export const Like= mongoose.model("Like",likeSchema)
+export const Like = mongoose.model("Like", likeSchema);

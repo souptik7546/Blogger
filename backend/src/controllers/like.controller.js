@@ -8,6 +8,7 @@ const likePost = asyncHandler(async (req, res) => {
   //get the post id from params and validate the post
   //verify the user current session
   //create a doc and send res
+ const { post } = req.params;
 
   const existingLike = await Like.findOne({
     likedBy: req.user._id,
@@ -18,14 +19,16 @@ const likePost = asyncHandler(async (req, res) => {
     throw new ApiError(400,"already liked the post")
   }
 
-  const { post } = req.params;
+ 
   if (!post) {
     throw new ApiError(400, "post dose not exist");
   }
   const like = await Like.create({
     likedBy: req.user._id,
-    likedTo: post._id,
+    likedTo: post,
   });
+  
+  
 
   return res.status(201).json(new ApiResponse(201, "like created", like));
 });
@@ -38,7 +41,7 @@ const removeLike = asyncHandler(
     const { post } = req.params;
     const like = await Like.findOne({
       likedBy: req.user._id,
-      likedTo: post._id,
+      likedTo: post,
     });
 
     if (!like) {
@@ -51,4 +54,20 @@ const removeLike = asyncHandler(
   }),
 );
 
-export { likePost, removeLike };
+const isLiked= asyncHandler(async (req,res)=>{
+  const {post}=req.params;
+  const like= await Like.findOne({
+    likedBy:req.user?._id,
+    likedTo:post
+  })
+  
+
+    if(!like){
+      return res.status(200).json(new ApiResponse(200,"no like",{isLiked:false}))
+    }
+
+    
+    return res.status(202).json(new ApiResponse(202,"like exists",{isLiked:true,like}))
+})
+
+export { likePost, removeLike ,isLiked};

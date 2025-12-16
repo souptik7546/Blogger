@@ -183,6 +183,7 @@ const getPost = asyncHandler(async (req, res) => {
         createdBy: 1,
         isActive: 1,
         likesCount: 1,
+        likes:1,
         commentCount: 1,
         comments: 1,
         createdAt: 1,

@@ -32,7 +32,6 @@ router.route("/resend-email").post(verifyJWT, resendEmailVerification);
 router.route("/change-password").post(verifyJWT, changePassword);
 router.route("/forgot-password").post(forgotPsswordRequest);
 router.route("/reset-password/:forgotPasswordToken").post(resetPassword);
-
 router.route("/currentuser").get(verifyJWT,getCurrentUser)
 router.route("/updateuser").post(verifyJWT,upload.single("avatar"),userProfileUpdate)
 
