@@ -12,6 +12,10 @@ app.use(cors(corsOptions));
 
 app.use(cookieParser());
 
+app.get("/",(req,res)=>{
+  return res.json("hello world")
+})
+
 //import of routers
 import userRouter from "./routes/auth.route.js";
 import postRouter from "./routes/post.route.js";
