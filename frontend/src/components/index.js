@@ -16,4 +16,5 @@ import Profile from "./Profile.jsx";
 import EditProfile from "./EditProfile.jsx";
 import PasswordForm from "./PasswordForm.jsx";
 import LikePostBtn from "./LikePostBtn.jsx";
-export { Header, Footer, Container, Logo, LogoutBtn, Button, Input,RTE ,Select,Signup,Login,PostForm,PostCard,Protected,Profile,EditProfile,PasswordForm,LikePostBtn};
+import CommentsSection from "./CommentSection.jsx";
+export { Header, Footer, Container, Logo, LogoutBtn, Button, Input,RTE ,Select,Signup,Login,PostForm,PostCard,Protected,Profile,EditProfile,PasswordForm,LikePostBtn,CommentsSection};

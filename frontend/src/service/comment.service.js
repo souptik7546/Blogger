@@ -1,3 +1,6 @@
+import axios from "axios";
+
+
 class comment {
 
   async create(comment, postId) {
@@ -9,7 +12,7 @@ class comment {
       );
 
       console.log(response);
-      return response.body;
+      return response;
     } catch (error) {
       throw error;
     }
@@ -18,13 +21,13 @@ class comment {
   async update(newComment,commentId){
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URI}/update/:${commentId}`,
+        `${import.meta.env.VITE_BACKEND_URI}/comment/update/${commentId}`,
         {newComment},
         { withCredentials: true }
       );
 
       console.log(response);
-      return response.body;
+      return response;
     } catch (error) {
       throw error;
     }
@@ -33,13 +36,13 @@ class comment {
   async delete(commentId){
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URI}/delete/:${commentId}`,
+        `${import.meta.env.VITE_BACKEND_URI}/comment/delete/${commentId}`,
         {},
         { withCredentials: true }
       );
 
       console.log(response);
-      return response.body;
+      return response;
     } catch (error) {
       throw error;
     }
